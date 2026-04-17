@@ -3,6 +3,9 @@ package memory
 import (
 	"os"
 	"sync"
+
+	tfidf "github.com/rioloc/tfidf-go"
+	"github.com/rioloc/tfidf-go/token"
 )
 
 type EmbeddingModel interface {
@@ -99,14 +102,72 @@ func (e *localEmbedder) Dimension() int {
 type tfidfEmbedder struct {
 	maxFeatures int
 	dimension   int
+	vocabulary  []string
+	tfIDFMatrix [][]float64
+	vectorizer  *tfidf.TfIdfVectorizer
+	documents   []string
+	mu          sync.Mutex
+}
+
+func (e *tfidfEmbedder) Fit(documents []string) {
+	e.mu.Lock()
+	defer e.mu.Unlock()
+
+	if len(documents) == 0 {
+		return
+	}
+
+	e.documents = documents
+	e.vectorizer = tfidf.NewTfIdfVectorizer()
+
+	tokenizer := token.NewTokenizer()
+	vocabulary, tokens, _ := tokenizer.Tokenize(documents)
+
+	e.vocabulary = vocabulary
+	if e.maxFeatures > 0 && len(vocabulary) > e.maxFeatures {
+		e.vocabulary = vocabulary[:e.maxFeatures]
+	}
+	e.dimension = len(e.vocabulary)
+
+	tfMatrix := tfidf.Tf(e.vocabulary, tokens)
+	idfVector := tfidf.Idf(e.vocabulary, tokens, true)
+
+	var err error
+	e.tfIDFMatrix, err = e.vectorizer.TfIdf(tfMatrix, idfVector)
+	if err != nil {
+		e.tfIDFMatrix = make([][]float64, len(documents))
+	}
 }
 
 func (e *tfidfEmbedder) Encode(texts []string) [][]float64 {
-	return make([][]float64, len(texts))
+	e.mu.Lock()
+	defer e.mu.Unlock()
+
+	if e.vectorizer == nil || len(e.tfIDFMatrix) == 0 {
+		return make([][]float64, len(texts))
+	}
+
+	tokenizer := token.NewTokenizer()
+	_, tokens, _ := tokenizer.Tokenize(texts)
+
+	tfMatrix := tfidf.Tf(e.vocabulary, tokens)
+	result, err := e.vectorizer.TfIdf(tfMatrix, tfidf.Idf(e.vocabulary, tokens, true))
+	if err != nil {
+		return make([][]float64, len(texts))
+	}
+
+	for i := range result {
+		if len(result[i]) > e.dimension {
+			result[i] = result[i][:e.dimension]
+		}
+	}
+	return result
 }
 
 func (e *tfidfEmbedder) Dimension() int {
-	return e.maxFeatures
+	e.mu.Lock()
+	defer e.mu.Unlock()
+	return e.dimension
 }
 
 func GetEmbeddingDimension() int {

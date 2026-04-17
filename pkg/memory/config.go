@@ -1,7 +1,7 @@
 package memory
 
 import (
-	"sync"
+		"sync"
 )
 
 type MemoryConfig struct {
