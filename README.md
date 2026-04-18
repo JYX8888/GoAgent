@@ -14,7 +14,7 @@
 
 ## 框架简介
 
-GoAgent 是一个用 Go 语言实现的 AI Agent 框架，源自 Python 的 HelloAgents_py 项目重构。采用 Go 语言重写以获得更好的性能和并发安全性。
+GoAgent 是一个用 Go 语言实现的 AI Agent 框架。采用 Go 语言以获得更好的性能和并发安全性。
 
 ### 特性
 
