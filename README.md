@@ -350,7 +350,7 @@ cfg := &MySQLConfig{
 	Host:     "localhost",
 	Port:     3306,
 	User:     "root",
-	Password: "Yl300822!",
+	Password: "",
 	Database: "goagent",
 }
 
@@ -491,17 +491,17 @@ cfg, err := config.LoadFromEnvFile()
 | `OPENAI_API_KEY` | OpenAI API Key | - |
 | `DASHSCOPE_API_KEY` | 阿里云 API Key | - |
 | `DEEPSEEK_API_KEY` | DeepSeek API Key | - |
-| `LLM_MODEL_ID` | 模型名称 | gpt-3.5-turbo |
+| `LLM_MODEL_ID` | 模型名称 | - |
 | `LLM_BASE_URL` | API 端点 | - |
 | `LLM_PROVIDER` | Provider | openai |
-| `MYSQL_HOST` | MySQL 主机 | localhost |
-| `MYSQL_USER` | MySQL 用户 | root |
-| `MYSQL_PASSWORD` | MySQL 密码 | Yl300822! |
-| `MYSQL_DATABASE` | MySQL 数据库 | goagent |
-| `NEO4J_URI` | Neo4j 地址 | bolt://localhost:7687 |
-| `NEO4J_USERNAME` | Neo4j 用户 | neo4j |
-| `NEO4J_PASSWORD` | Neo4j 密码 | neo4j |
-| `QDRANT_URL` | Qdrant 地址 | localhost:6333 |
+| `MYSQL_HOST` | MySQL 主机 | - |
+| `MYSQL_USER` | MySQL 用户 | - |
+| `MYSQL_PASSWORD` | MySQL 密码 | - |
+| `MYSQL_DATABASE` | MySQL 数据库 | - |
+| `NEO4J_URI` | Neo4j 地址 | - |
+| `NEO4J_USERNAME` | Neo4j 用户 | - |
+| `NEO4J_PASSWORD` | Neo4j 密码 | - |
+| `QDRANT_URL` | Qdrant 地址 | - |
 | `QDRANT_API_KEY` | Qdrant Key | - |
 | `LOG_LEVEL` | 日志级别 | INFO |
 | `DEBUG` | 调试模式 | false |
